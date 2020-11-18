@@ -13,18 +13,18 @@ import {
   Req,
 } from '@nestjs/common';
 import { ConfigService } from '../shared/config.service';
+import { EasyService } from './easy.service';
+import { QueryDto } from './dto/query.dto';
 
 @Controller('easy')
 export class EasyController {
-  @Get(':resource/list')
-  async list(@Param('resource') resource: string, @Query() query) {
-    return { resource, ...query };
+  constructor(@Inject(EasyService) private readonly easyService: EasyService,
+  ) {
   }
 
-  constructor(
-    @Inject(ConfigService) private readonly configService: ConfigService,
-  ) {
-    console.log(this.configService.config());
+  @Get(':resource/list')
+  async list(@Param('resource') resource: string, @Query() query: QueryDto) {
+    return this.easyService.list(resource, query);
   }
 
   @Get(':resource/detail/:id')
